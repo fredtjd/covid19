@@ -1,6 +1,10 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
+from git import Repo
+import os
+
+python_dir = os.path.dirname(os.path.realpath(__file__))
 
 latestData = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=overview&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv'
 endDate = pd.to_datetime(datetime.today() - timedelta(days=2))
@@ -16,9 +20,16 @@ df['newCasesBySpecimenDate7dayRollingAvg'] = df['newCasesBySpecimenDate'].rollin
 
 df = df['2020-03-01':endDate]
 
-for i in 'newAdmissions', 'newCasesByPublishDate', 'newCasesBySpecimenDate':
-    df.plot(y=[i, i + '7dayRollingAvg'], ylim=0)
-    plt.savefig(i + '.png')
+repo = Repo(os.path.join(python_dir, '.git'))
 
-df.plot(y=['newCasesByPublishDate7dayRollingAvg', 'newCasesBySpecimenDate7dayRollingAvg'], ylim=0)
-plt.savefig('RollingAverages.png')
+def grapher(graphData, graphTitle):
+    df.plot(y=[graphData, graphData + '7dayRollingAvg'], ylim=0, title=graphTitle, xlabel='Date', ylabel='n')
+    plt.savefig(graphData + '.png')
+    repo.git.add(graphData + '.png')
+
+grapher('newAdmissions', 'New Admissions')
+grapher('newCasesByPublishDate', 'New Cases by Publication Date')
+grapher('newCasesBySpecimenDate', 'New Cases by Specimen Date')
+
+repo.index.commit('Updated graphs')
+repo.remote(name='origin').push()
