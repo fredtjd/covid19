@@ -23,7 +23,7 @@ df = df['2020-03-01':endDate]
 repo = Repo(os.path.join(python_dir, '.git'))
 
 def grapher(graphData, graphTitle):
-    df.plot(y=[graphData, graphData + '7dayRollingAvg'], ylim=0, title=graphTitle, xlabel='Date', ylabel='n')
+    df.plot(y=[graphData, graphData + '7dayRollingAvg'], ylim=0, title=graphTitle)
     plt.savefig(graphData + '.png')
     repo.git.add(graphData + '.png')
 
