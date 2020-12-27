@@ -9,19 +9,19 @@ python_dir = os.path.dirname(os.path.realpath(__file__))
 
 #population values used from https://www.ukpopulation.org
 
-UK = ['UK', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=overview&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 68.0]
-London = ['London', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=region&areaCode=E12000007&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 93.0]
-Liverpool = ['Liverpool', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&areaCode=E08000012&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 4.9]
-Manchester = ['Manchester', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&areaCode=E08000003&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 5.4]
-Birmingham = ['Birmingham', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&areaCode=E08000025&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 13.0]
-Scotland = ['Scotland', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=S92000003&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 54.7]
-Wales = ['Wales', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=W92000004&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 32.0]
-NI = ['NI', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=N92000002&metric=newAdmissions&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 18.97]
+UK = ['UK', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=overview&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 68.0]
+London = ['London', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=region&areaCode=E12000007&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 93.0]
+Liverpool = ['Liverpool', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&areaCode=E08000012&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 4.9]
+Manchester = ['Manchester', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&areaCode=E08000003&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 5.4]
+Birmingham = ['Birmingham', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&areaCode=E08000025&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 13.0]
+Scotland = ['Scotland', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=S92000003&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 54.7]
+Wales = ['Wales', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=W92000004&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 32.0]
+NI = ['NI', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=N92000002&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 18.97]
 
 #endDate = pd.to_datetime(datetime.today() - timedelta(days=1))
 #startDate = '2020-08-01'
 
-adm = ['newAdmissions', 'New Admissions']
+#adm = ['newAdmissions', 'New Admissions']
 pub = ['newCasesByPublishDate', 'New Cases by Publication Date']
 spec = ['newCasesBySpecimenDate', 'New Cases by Specimen Date']
 
