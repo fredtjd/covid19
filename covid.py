@@ -83,7 +83,7 @@ def dataPlotter(plot_type, look_back, percapita, avg):
     ax.xaxis.set_major_locator(MonthLocator())
     ax.xaxis.set_major_formatter(DateFormatter('%b'))
     ax.xaxis.set_minor_locator(MonthLocator(bymonthday=15))
-    plt.savefig(os.path.join(python_dir, multiplot_details[1] + '.png'))
+    plt.savefig(os.path.join(python_dir, 'figs', multiplot_details[1] + '.png'))
 
 if __name__ == '__main__':
     csvDownloader()
