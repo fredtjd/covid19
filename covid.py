@@ -19,7 +19,7 @@ pub = ['newCasesByPublishDate', 'New Cases by Publish Date']
 spec = ['newCasesBySpecimenDate', 'New Cases by Specimen Date']
 deaths = ['newDeathsByPublishDate', 'Deaths by Publish Date']
 
-locations = [London, Scotland, Wales, NI, Oxon]
+locations = [London, Scotland, Wales, NI]
 
 def csvDownloader():
     #Checks if today's date is in currently downloaded csv, if not checks 1 on the server and only downloads all csvs if they contain today's date and exits the script if nothing new is downloaded
@@ -42,7 +42,7 @@ def csvDownloader():
                 for loc in locations:
                     req.urlretrieve(loc[1], os.path.join(csv_dir, loc[0] + '.csv'))
             else:
-                print('Now new updates. Exiting.')
+                print('No new updates. Exiting.')
                 sys.exit()
 
 def dataFrame():
@@ -83,6 +83,7 @@ def dataPlotter(plot_type, look_back, percapita, avg):
     ax.xaxis.set_major_locator(MonthLocator())
     ax.xaxis.set_major_formatter(DateFormatter('%b'))
     ax.xaxis.set_minor_locator(MonthLocator(bymonthday=15))
+    
     plt.savefig(os.path.join(python_dir, 'figs', multiplot_details[1] + '.png'))
 
 if __name__ == '__main__':
@@ -91,7 +92,7 @@ if __name__ == '__main__':
     dataPlotter(pub, 0, True, False)
     dataPlotter(pub, 0, False, True)
     dataPlotter(pub, 0, False, False)
-    dataPlotter(deaths, 0, False, False)
+#    dataPlotter(deaths, 0, False, False)
     dataPlotter(spec, 7, True, True) #per100k/avg
     dataPlotter(spec, 7, True, False) #per100k
     dataPlotter(spec, 7, False, True) #all cases avg
