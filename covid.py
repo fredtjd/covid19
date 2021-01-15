@@ -9,6 +9,7 @@ python_dir = os.path.dirname(os.path.realpath(__file__))
 csv_dir = os.path.join(python_dir, 'csv')
 
 #population values used from https://www.ukpopulation.org
+England = ['England', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=E92000001&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 558.9]
 London = ['London', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=region&areaCode=E12000007&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 89.5]
 Scotland = ['Scotland', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=S92000003&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 54.7]
 Wales = ['Wales', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=W92000004&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 32.0]
@@ -19,7 +20,7 @@ pub = ['newCasesByPublishDate', 'New Cases by Publish Date']
 spec = ['newCasesBySpecimenDate', 'New Cases by Specimen Date']
 deaths = ['newDeathsByPublishDate', 'Deaths by Publish Date']
 
-locations = [London, Scotland, Wales, NI]
+locations = [England, London, Scotland, Wales, NI]
 
 def csvDownloader():
     #Checks if today's date is in currently downloaded csv, if not checks 1 on the server and only downloads all csvs if they contain today's date and exits the script if nothing new is downloaded
