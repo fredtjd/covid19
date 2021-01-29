@@ -10,13 +10,13 @@ python_dir = os.path.dirname(os.path.realpath(__file__))
 csv_dir = os.path.join(python_dir, 'csv')
 
 #population values used from https://www.ukpopulation.org
-England = ['England', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=E92000001&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 558.9]
-London = ['London', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=region&areaCode=E12000007&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 89.5]
-Scotland = ['Scotland', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=S92000003&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 54.7]
-Wales = ['Wales', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=W92000004&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 32.0]
-NI = ['NI', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=N92000002&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 18.97]
-Oxon = ['Oxfordshire', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&areaCode=E10000025&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&metric=newDeathsByPublishDate&format=csv', 6.91] #http://insight.oxfordshire.gov.uk/cms/population
-admissions = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=overview&metric=newAdmissions&metric=covidOccupiedMVBeds&metric=hospitalCases&format=csv'
+England = ['England', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=E92000001&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 558.9]
+London = ['London', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=region&areaCode=E12000007&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 89.5]
+Scotland = ['Scotland', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=S92000003&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 54.7]
+Wales = ['Wales', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=W92000004&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 32.0]
+NI = ['NI', 'https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=N92000002&metric=newCasesByPublishDate&metric=newCasesBySpecimenDate&format=csv', 18.97]
+admissions = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=overview&metric=newAdmissions&metric=covidOccupiedMVBeds&metric=hospitalCases&metric=newDeathsByDeathDate&format=csv'
+
 
 
 pub = ['newCasesByPublishDate', 'New Cases by Publish Date']
@@ -30,7 +30,7 @@ def csvDownloader():
     if not os.path.isfile(os.path.join(csv_dir, London[0] + '.csv')):
         for loc in locations:
             req.urlretrieve(loc[1], os.path.join(csv_dir, loc[0] + '.csv'))
-        req.urlretrieve(admissions, os.path.join(csv_dir, 'Admissions.csv'))
+        req.urlretrieve(admissions, os.path.join(csv_dir, 'Hospital Data.csv'))
     else:
         da = str(datetime.today().date())
         print('Checking downloaded csv.')
@@ -46,7 +46,7 @@ def csvDownloader():
                 print('Downloading from server.')
                 for loc in locations:
                     req.urlretrieve(loc[1], os.path.join(csv_dir, loc[0] + '.csv'))
-                req.urlretrieve(admissions, os.path.join(csv_dir, 'Admissions.csv'))
+                req.urlretrieve(admissions, os.path.join(csv_dir, 'Hospital Data.csv'))
             else:
                 print('No new updates. Recreating graphs.')
                 #sys.exit()
@@ -67,16 +67,15 @@ def dataFrame():
             df[loc[0]][plot_type[0] + 'per100kavg'] = df[loc[0]][plot_type[0] + 'per100k'].rolling(window=7).mean()
     return df
 
-def admissionsDF():
+def hospitalDataFrame():
     df = {}
-    csv_file = os.path.join(csv_dir, 'Admissions.csv')
+    csv_file = os.path.join(csv_dir, 'Hospital Data.csv')
     df = pd.read_csv(csv_file, index_col=0)
     df = df.drop(['areaType', 'areaCode', 'areaName'], axis = 1)
     df.index = pd.to_datetime(df.index)
     df = df.sort_index()
-    df['newAdmissionsavg'] = df['newAdmissions'].rolling(window=7).mean()
-    df['covidOccupiedMVBedsavg'] = df['covidOccupiedMVBeds'].rolling(window=7).mean()
-    df['hospitalCasesavg'] = df['hospitalCases'].rolling(window=7).mean()
+    for metric in ['newAdmissions', 'covidOccupiedMVBeds', 'hospitalCases','newDeathsByDeathDate']:
+        df[metric + 'avg'] = df[metric].rolling(window=7).mean()
     return df
 
 def dataPlotter(plot_type, look_back, percapita, avg):
@@ -106,19 +105,20 @@ def dataPlotter(plot_type, look_back, percapita, avg):
     
     plt.savefig(os.path.join(python_dir, 'figs', multiplot_details[1] + '.png'))
 
-def admissionsDP(look_back):
+def hospitalDataPlotter():
     plt.clf()
-    startDate = '2020-03-01'
-    endDate = pd.to_datetime(datetime.today() - timedelta(days=look_back))
-    df = admissionsDF()
+    startDate = '2020-04-01'
+    endDate = datetime.today()
+    df = hospitalDataFrame()
     df = df[startDate:endDate]
-    plt.plot(df['newAdmissionsavg'], label='New Admissions')
-    plt.plot(df['covidOccupiedMVBedsavg'], label='Patients Ventilated')
+    #plt.plot(df['newAdmissionsavg'], label='New Admissions')
     plt.plot(df['hospitalCasesavg'], label='Hospitalised Patients')
+    plt.plot(df['covidOccupiedMVBedsavg'], label='Ventilated Patients')
+    #plt.plot(df['newDeathsByDeathDateavg'], label='Deaths by Date of Death')
     plt.title('Hospital Data (7 day average)')
     #plt.ylim(0)
     plt.legend()
-    plt.yscale('log')
+    #plt.yscale('log')
     ax = plt.gca()
     ax.xaxis.set_major_locator(MonthLocator())
     ax.xaxis.set_major_formatter(DateFormatter('%b'))
@@ -126,13 +126,38 @@ def admissionsDP(look_back):
     ax.yaxis.set_major_formatter(FormatStrFormatter("%g"))
     plt.savefig(os.path.join(python_dir, 'figs', 'Hospital Data (7 day average).png'))
 
+def individualPlotter(location):
+    plt.clf()
+    startDate = '2020-08-01'
+    endDate = datetime.today()
+    df = individualDataFrame(location)
+    df = df[startDate:endDate]
+    plt.bar(df['newCasesByPublishDate'], label='')
+    plt.plot(df['newCasesByPublishDateavg'], label='7 day rolling average')
+    plt.title('New Cases by Publish Date')
+    plt.ylim(0)
+    plt.legend()
+    ax = plt.gca()
+    ax.xaxis.set_major_locator(MonthLocator())
+    ax.xaxis.set_major_formatter(DateFormatter('%b'))
+    ax.xaxis.set_minor_locator(MonthLocator(bymonthday=15))
+    plt.savefig(os.path.join(python_dir, 'figs', location + '.png'))
+
+def individualDataFrame(location):
+    df = {}
+    csv_file = os.path.join(csv_dir, location + '.csv')
+    df = pd.read_csv(csv_file, index_col=0)
+    df = df.drop(['areaType', 'areaCode', 'areaName'], axis = 1)
+    df.index = pd.to_datetime(df.index)
+    df = df.sort_index()
+    df['newCasesByPublishDateavg'] = df['newCasesByPublishDate'].rolling(window=7).mean()
+    return df
+
 if __name__ == '__main__':
     csvDownloader()
                        #100k,   avg
     dataPlotter(pub,  0, True,  True)
-    dataPlotter(pub,  0, True,  False)
     dataPlotter(pub,  0, False, True)
-    dataPlotter(pub,  0, False, False)
     dataPlotter(spec, 7, True,  True)
     dataPlotter(spec, 7, False, True)
-    admissionsDP(2)
+    hospitalDataPlotter()
